@@ -1,0 +1,67 @@
+Checking date: 2025-09-12, DayOfWeek: 5, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-13, DayOfWeek: 6, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-14, DayOfWeek: 0, IsWorkingDay: false BookingPage.tsx:64:15
+Checking date: 2025-09-15, DayOfWeek: 1, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-16, DayOfWeek: 2, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-17, DayOfWeek: 3, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-18, DayOfWeek: 4, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-19, DayOfWeek: 5, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-20, DayOfWeek: 6, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-21, DayOfWeek: 0, IsWorkingDay: false BookingPage.tsx:64:15
+Checking date: 2025-09-22, DayOfWeek: 1, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-23, DayOfWeek: 2, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-24, DayOfWeek: 3, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-25, DayOfWeek: 4, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-26, DayOfWeek: 5, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-27, DayOfWeek: 6, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-28, DayOfWeek: 0, IsWorkingDay: false BookingPage.tsx:64:15
+Checking date: 2025-09-29, DayOfWeek: 1, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-30, DayOfWeek: 2, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-10-01, DayOfWeek: 3, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-10-02, DayOfWeek: 4, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-10-03, DayOfWeek: 5, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-10-04, DayOfWeek: 6, IsWorkingDay: true BookingPage.tsx:64:15
+Generated Available Dates: 
+Array(30) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+BookingPage.tsx:81:13
+--- generateAvailableDates --- BookingPage.tsx:53:13
+Checking date: 2025-09-01, DayOfWeek: 1, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-02, DayOfWeek: 2, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-03, DayOfWeek: 3, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-04, DayOfWeek: 4, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-05, DayOfWeek: 5, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-06, DayOfWeek: 6, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-07, DayOfWeek: 0, IsWorkingDay: false BookingPage.tsx:64:15
+Checking date: 2025-09-08, DayOfWeek: 1, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-09, DayOfWeek: 2, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-10, DayOfWeek: 3, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-11, DayOfWeek: 4, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-12, DayOfWeek: 5, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-13, DayOfWeek: 6, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-14, DayOfWeek: 0, IsWorkingDay: false BookingPage.tsx:64:15
+Checking date: 2025-09-15, DayOfWeek: 1, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-16, DayOfWeek: 2, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-17, DayOfWeek: 3, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-18, DayOfWeek: 4, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-19, DayOfWeek: 5, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-20, DayOfWeek: 6, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-21, DayOfWeek: 0, IsWorkingDay: false BookingPage.tsx:64:15
+Checking date: 2025-09-22, DayOfWeek: 1, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-23, DayOfWeek: 2, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-24, DayOfWeek: 3, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-25, DayOfWeek: 4, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-26, DayOfWeek: 5, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-27, DayOfWeek: 6, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-28, DayOfWeek: 0, IsWorkingDay: false BookingPage.tsx:64:15
+Checking date: 2025-09-29, DayOfWeek: 1, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-09-30, DayOfWeek: 2, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-10-01, DayOfWeek: 3, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-10-02, DayOfWeek: 4, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-10-03, DayOfWeek: 5, IsWorkingDay: true BookingPage.tsx:64:15
+Checking date: 2025-10-04, DayOfWeek: 6, IsWorkingDay: true BookingPage.tsx:64:15
+Generated Available Dates: 
+Array(30) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+BookingPage.tsx:81:13
+
+​
+
