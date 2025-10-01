@@ -9,11 +9,11 @@ interface ImageUploadProps {
   onUploadSuccess?: (imageUrl: string) => void;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ 
-  barbeariaId, 
-  type, 
-  currentImageUrl, 
-  onUploadSuccess 
+const ImageUpload: React.FC<ImageUploadProps> = ({
+  barbeariaId,
+  type,
+  currentImageUrl,
+  onUploadSuccess
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -49,8 +49,46 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     return null;
   };
 
+  // Redimensionar imagem
+  const resizeImage = async (file: File): Promise<Blob> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = 1080;
+          canvas.height = 1080;
+          const ctx = canvas.getContext('2d');
+
+          if (ctx) {
+            // Primeiro, pinte um fundo branco
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Calcule as dimensões para manter a proporção
+            const scale = Math.min(1080 / img.width, 1080 / img.height);
+            const x = (1080 - img.width * scale) / 2;
+            const y = (1080 - img.height * scale) / 2;
+
+            // Desenhe a imagem centralizada
+            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+
+            canvas.toBlob((blob) => {
+              if (blob) {
+                resolve(blob);
+              }
+            }, 'image/jpeg', 0.95);
+          }
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   // Processar arquivo selecionado
-  const processFile = useCallback((file: File) => {
+  const processFile = useCallback(async (file: File) => {
     const validationError = validateFile(file);
     if (validationError) {
       setError(validationError);
@@ -58,7 +96,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     }
 
     setError(null);
-    
+
     // Criar preview
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -189,11 +227,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             <img
               src={currentImage}
               alt={title}
-              className={`rounded-lg shadow-md ${
-                isLogo 
-                  ? 'w-32 h-32 object-cover' 
-                  : 'w-full max-w-md h-32 object-cover'
-              }`}
+              className={`rounded-lg shadow-md ${isLogo
+                ? 'w-32 h-32 object-cover'
+                : 'w-full max-w-md h-32 object-cover'
+                }`}
               onError={(e) => {
                 // Se a imagem falhar ao carregar, esconder
                 (e.target as HTMLImageElement).style.display = 'none';
@@ -219,11 +256,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
       {/* Área de upload */}
       <div
-        className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-          isDragging
-            ? 'border-yellow-400 bg-yellow-50'
-            : 'border-gray-300 hover:border-yellow-400 hover:bg-yellow-50'
-        } ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+        className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragging
+          ? 'border-yellow-400 bg-yellow-50'
+          : 'border-gray-300 hover:border-yellow-400 hover:bg-yellow-50'
+          } ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
@@ -264,12 +300,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           <p className="text-sm text-gray-600">
             {isLogo ? (
               <>
-                <strong>Dica para Logo:</strong> Use uma imagem quadrada com boa resolução. 
+                <strong>Dica para Logo:</strong> Use uma imagem quadrada com boa resolução.
                 A logo aparecerá no cabeçalho do seu dashboard e na página pública da barbearia.
               </>
             ) : (
               <>
-                <strong>Dica para Banner:</strong> Use uma imagem em formato paisagem (mais larga que alta). 
+                <strong>Dica para Banner:</strong> Use uma imagem em formato paisagem (mais larga que alta).
                 O banner aparecerá como destaque na página pública da sua barbearia.
               </>
             )}

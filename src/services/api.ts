@@ -107,7 +107,7 @@ class ApiService {
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
@@ -398,12 +398,12 @@ class ApiService {
   async checkAvailability(barbeariaId: number, barbeiroId: number, data: string): Promise<string[]> {
     try {
       const agendamentos = await this.getAgendamentosByBarbearia(barbeariaId);
-      const dataAgendamentos = agendamentos.filter(ag => 
-        ag.barbeiroId === barbeiroId && 
-        ag.dataHora.startsWith(data) && 
+      const dataAgendamentos = agendamentos.filter(ag =>
+        ag.barbeiroId === barbeiroId &&
+        ag.dataHora.startsWith(data) &&
         (ag.status === 'AGENDAMENTO_PROGRAMADO' || ag.status === 'AGENDAMENTO_CONFIRMADO')
       );
-      
+
       const horariosOcupados = dataAgendamentos.map(ag => {
         // Extrair hora e minuto da string ISO usando UTC (já que salvamos como UTC)
         const dateObj = new Date(ag.dataHora);
@@ -587,6 +587,14 @@ class ApiService {
       createdAt: string;
       updatedAt: string;
     }[]>(`/pagamentos/barbearia/${barbeariaId}`);
+  }
+
+  // Método para atualizar horários da barbearia
+  async updateHorariosBarbearia(barbeariaId: number, horarios: any[]) {
+    return this.request(`/barbearias/${barbeariaId}/horarios`, {
+      method: 'POST',
+      body: JSON.stringify({ horarios })
+    });
   }
 }
 

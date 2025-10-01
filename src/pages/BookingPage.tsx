@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowLeft, Calendar, Clock, User, Scissors, Star, MapPin, Phone, CheckCircle, Info } from 'lucide-react';
 import { Barbearia, Barbeiro, Servico, Cliente, apiService, formatCurrency, Horario } from '../services/api';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 interface BookingPageProps {
   onBack: () => void;
@@ -19,7 +20,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [intervalos, setIntervalos] = useState<any[]>([]);
-  
+
   // Dados do cliente
   const [clientName, setClientName] = useState('');
   const [clientPhone, setClientPhone] = useState('');
@@ -112,10 +113,10 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
 
   const loadAvailableTimes = async () => {
     if (!selectedDate || !selectedBarber) return;
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       const selectedDateObj = new Date(selectedDate + 'T00:00:00');
       const dayOfWeek = selectedDateObj.getDay();
@@ -146,7 +147,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
       }
 
       const bookedTimes = await apiService.checkAvailability(barbearia.id, selectedBarber.id, selectedDate);
-      
+
       const nowSaoPaulo = getSaoPauloTime();
       const todaySaoPauloISO = new Date(nowSaoPaulo.getFullYear(), nowSaoPaulo.getMonth(), nowSaoPaulo.getDate()).toISOString().split('T')[0];
 
@@ -154,12 +155,12 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
       const isTimeInInterval = (time: string): boolean => {
         const dayNames = ['DOMINGO', 'SEGUNDA', 'TERCA', 'QUARTA', 'QUINTA', 'SEXTA', 'SABADO'];
         const dayName = dayNames[dayOfWeek];
-        
+
         return intervalos.some(intervalo => {
           // Verifica se é um intervalo geral da barbearia ou específico do barbeiro
           const isGeneralInterval = !intervalo.barbeiroId;
           const isBarbeiroInterval = intervalo.barbeiroId === selectedBarber.id;
-          
+
           if (!isGeneralInterval && !isBarbeiroInterval) {
             return false;
           }
@@ -185,7 +186,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
       const filteredTimes = allPossibleTimes.filter(time => {
         const isBooked = bookedTimes.includes(time);
         const isInInterval = isTimeInInterval(time);
-        
+
         if (selectedDate === todaySaoPauloISO) {
           const [hour, minute] = time.split(':').map(Number);
           const slotDateTime = new Date(nowSaoPaulo.getFullYear(), nowSaoPaulo.getMonth(), nowSaoPaulo.getDate(), hour, minute, 0, 0);
@@ -195,12 +196,12 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
         } else if (new Date(selectedDate) < new Date(todaySaoPauloISO)) {
           return false; // Não mostrar horários para dias passados
         }
-        
+
         return !isBooked && !isInInterval;
       });
 
       setAvailableTimes(filteredTimes);
-      
+
       if (filteredTimes.length === 0) {
         setError('Nenhum horário disponível para esta data e barbeiro.');
       }
@@ -216,7 +217,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
   const handleDateSelect = (date: string, isWorkingDay: boolean) => {
     if (!isWorkingDay) return;
     setSelectedDate(date);
-    setSelectedTime(''); 
+    setSelectedTime('');
     setError(null);
     setCurrentStep('service');
   };
@@ -228,7 +229,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
 
   const handleBarberSelect = (barbeiro: Barbeiro) => {
     setSelectedBarber(barbeiro);
-    setSelectedTime(''); 
+    setSelectedTime('');
     setCurrentStep('time');
   };
 
@@ -243,7 +244,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
 
   const handleClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!clientName.trim() || !clientPhone.trim()) {
       setError('Nome e telefone são obrigatórios');
       return;
@@ -261,7 +262,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
 
     try {
       let cliente = await apiService.getClienteByTelefone(formattedPhone, barbearia.id);
-      
+
       if (!cliente) {
         cliente = await apiService.createCliente({
           nome: clientName.trim(),
@@ -273,10 +274,10 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
       // Criar string ISO mantendo o horário selecionado (sem conversão de fuso)
       const [year, month, day] = selectedDate.split('-').map(Number);
       const [hour, minute] = selectedTime.split(':').map(Number);
-      
+
       // Criar string ISO manualmente para preservar o horário exato selecionado
       const isoString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00.000Z`;
-      
+
       await apiService.createAgendamento({
         clienteId: cliente.id,
         barbeiroId: selectedBarber.id,
@@ -341,29 +342,26 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
           const Icon = step.icon;
           const isActive = step.key === currentStep;
           const isCompleted = index < currentIndex;
-          
+
           return (
             <React.Fragment key={step.key}>
               <div className="flex flex-col items-center min-w-[80px]">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
-                  isActive ? 'bg-yellow-400 text-black' :
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full ${isActive ? 'bg-yellow-400 text-black' :
                   isCompleted ? 'bg-green-500 text-white' :
-                  'bg-gray-200 text-gray-500'
-                }`}>
+                    'bg-gray-200 text-gray-500'
+                  }`}>
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className={`mt-2 text-xs text-center font-medium ${
-                  isActive ? 'text-yellow-600' :
+                <span className={`mt-2 text-xs text-center font-medium ${isActive ? 'text-yellow-600' :
                   isCompleted ? 'text-green-600' :
-                  'text-gray-500'
-                }`}>
+                    'text-gray-500'
+                  }`}>
                   {step.label}
                 </span>
               </div>
               {index < steps.length - 1 && (
-                <div className={`flex-1 h-0.5 mx-2 sm:mx-4 ${
-                  isCompleted ? 'bg-green-500' : 'bg-gray-200'
-                }`} />
+                <div className={`flex-1 h-0.5 mx-2 sm:mx-4 ${isCompleted ? 'bg-green-500' : 'bg-gray-200'
+                  }`} />
               )}
             </React.Fragment>
           );
@@ -373,20 +371,20 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
   };
 
   const renderBarbershopInfo = () => (
-    <div className="bg-white rounded-lg shadow-sm border p-6 mb-6 text-center md:text-left">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6 mb-6 text-center md:text-left">
       {barbearia.logoUrl && (
-        <img 
-          src={`${apiService.baseUrl}${barbearia.logoUrl}`} 
-          alt={`${barbearia.nome} Logo`} 
+        <img
+          src={`${apiService.baseUrl}${barbearia.logoUrl}`}
+          alt={`${barbearia.nome} Logo`}
           className="h-24 w-24 object-contain mx-auto md:mx-0 mb-4 rounded-full border-2 border-gray-100"
         />
       )}
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">{barbearia.nome}</h2>
-      <p className="text-gray-600 mb-4">Bem-vindo(a)! Agende seu horário conosco.</p>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{barbearia.nome}</h2>
+      <p className="text-gray-600 dark:text-gray-300 mb-4">Bem-vindo(a)! Agende seu horário conosco.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2 flex items-center"><Clock className="h-4 w-4 mr-2"/> Horário de Funcionamento:</h4>
+          <h4 className="font-semibold text-gray-800 mb-2 flex items-center"><Clock className="h-4 w-4 mr-2" /> Horário de Funcionamento:</h4>
           <ul className="text-sm text-gray-600 space-y-1">
             {barbearia.horarios && barbearia.horarios.length > 0 ? (
               barbearia.horarios.map(h => (
@@ -398,12 +396,12 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2 flex items-center"><Phone className="h-4 w-4 mr-2"/> Contato:</h4>
+          <h4 className="font-semibold text-gray-800 mb-2 flex items-center"><Phone className="h-4 w-4 mr-2" /> Contato:</h4>
           <p className="text-sm text-gray-600">{barbearia.telefone || 'Não informado'}</p>
-          
+
           {(barbearia.estado || barbearia.cidade || barbearia.cep || barbearia.bairro || barbearia.complemento || barbearia.pontoReferencia) && (
             <>
-              <h4 className="font-semibold text-gray-800 mb-2 mt-4 flex items-center"><MapPin className="h-4 w-4 mr-2"/> Endereço:</h4>
+              <h4 className="font-semibold text-gray-800 mb-2 mt-4 flex items-center"><MapPin className="h-4 w-4 mr-2" /> Endereço:</h4>
               <div className="text-sm text-gray-600 space-y-1">
                 {barbearia.estado && barbearia.cidade && (
                   <p>{barbearia.cidade}, {barbearia.estado}</p>
@@ -429,8 +427,8 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
   );
 
   const renderDateSelection = () => (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center space-x-2">
         <Calendar className="h-5 w-5 text-yellow-400" />
         <span>Escolha a Data</span>
       </h3>
@@ -440,11 +438,10 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
             key={date.date}
             onClick={() => handleDateSelect(date.date, date.isWorkingDay)}
             disabled={!date.isWorkingDay || date.isPastDay}
-            className={`p-3 rounded-lg text-center transition-colors flex flex-col items-center justify-center ${
-              selectedDate === date.date
-                ? 'bg-yellow-400 text-black' : !date.isWorkingDay || date.isPastDay
+            className={`p-3 rounded-lg text-center transition-colors flex flex-col items-center justify-center ${selectedDate === date.date
+              ? 'bg-yellow-400 text-black' : !date.isWorkingDay || date.isPastDay
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-            }`}
+              }`}
           >
             <div className="text-xs font-medium">{date.dayName}</div>
             <div className="text-lg font-bold">{date.dayNumber}</div>
@@ -457,15 +454,15 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
       </div>
       {error && currentStep === 'date' && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-4">
-          <p className="text-red-600 text-sm flex items-center"><Info className="h-4 w-4 mr-2"/>{error}</p>
+          <p className="text-red-600 text-sm flex items-center"><Info className="h-4 w-4 mr-2" />{error}</p>
         </div>
       )}
     </div>
   );
 
   const renderServiceSelection = () => (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center space-x-2">
         <Scissors className="h-5 w-5 text-yellow-400" />
         <span>Escolha o Serviço</span>
       </h3>
@@ -474,11 +471,10 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
           <button
             key={service.id}
             onClick={() => handleServiceSelect(service)}
-            className={`w-full p-4 rounded-lg border-2 text-left transition-colors ${
-              selectedService?.id === service.id
-                ? 'border-yellow-400 bg-yellow-50'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
+            className={`w-full p-4 rounded-lg border-2 text-left transition-colors ${selectedService?.id === service.id
+              ? 'border-yellow-400 bg-yellow-50'
+              : 'border-gray-200 hover:border-gray-300'
+              }`}
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
               <div>
@@ -497,8 +493,8 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
   );
 
   const renderBarberSelection = () => (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center space-x-2">
         <User className="h-5 w-5 text-yellow-400" />
         <span>Escolha o Barbeiro</span>
       </h3>
@@ -507,11 +503,10 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
           <button
             key={barbeiro.id}
             onClick={() => handleBarberSelect(barbeiro)}
-            className={`w-full p-4 rounded-lg border-2 text-left transition-colors ${
-              selectedBarber?.id === barbeiro.id
-                ? 'border-yellow-400 bg-yellow-50'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
+            className={`w-full p-4 rounded-lg border-2 text-left transition-colors ${selectedBarber?.id === barbeiro.id
+              ? 'border-yellow-400 bg-yellow-50'
+              : 'border-gray-200 hover:border-gray-300'
+              }`}
           >
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center flex-shrink-0">
@@ -530,12 +525,12 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
   );
 
   const renderTimeSelection = () => (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center space-x-2">
         <Clock className="h-5 w-5 text-yellow-400" />
         <span>Escolha o Horário</span>
       </h3>
-      
+
       {loading && (
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400 mx-auto"></div>
@@ -549,11 +544,10 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
             <button
               key={time}
               onClick={() => handleTimeSelect(time)}
-              className={`p-3 rounded-lg text-center transition-colors ${
-                selectedTime === time
-                  ? 'bg-yellow-400 text-black'
-                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-              }`}
+              className={`p-3 rounded-lg text-center transition-colors ${selectedTime === time
+                ? 'bg-yellow-400 text-black'
+                : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                }`}
             >
               {time}
             </button>
@@ -571,16 +565,16 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
 
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-4">
-          <p className="text-red-600 text-sm flex items-center"><Info className="h-4 w-4 mr-2"/>{error}</p>
+          <p className="text-red-600 text-sm flex items-center"><Info className="h-4 w-4 mr-2" />{error}</p>
         </div>
       )}
     </div>
   );
 
   const renderSummary = () => (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Resumo do Agendamento</h3>
-      
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Resumo do Agendamento</h3>
+
       <div className="space-y-4 mb-6">
         <div className="flex justify-between">
           <span className="text-gray-600">Data:</span>
@@ -607,7 +601,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
           </span>
         </div>
       </div>
-      
+
       <button
         onClick={handleConfirmBooking}
         className="w-full bg-yellow-400 text-black py-4 rounded-lg font-bold text-lg hover:bg-yellow-500 transition-colors"
@@ -618,9 +612,9 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
   );
 
   const renderClientForm = () => (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Identificação do Cliente</h3>
-      
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Identificação do Cliente</h3>
+
       <form onSubmit={handleClientSubmit} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -636,7 +630,7 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
             required
           />
         </div>
-        
+
         <div>
           <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
             Telefone (WhatsApp)
@@ -656,10 +650,10 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
 
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-            <p className="text-red-600 text-sm flex items-center"><Info className="h-4 w-4 mr-2"/>{error}</p>
+            <p className="text-red-600 text-sm flex items-center"><Info className="h-4 w-4 mr-2" />{error}</p>
           </div>
         )}
-        
+
         <button
           type="submit"
           disabled={isCreatingBooking}
@@ -672,14 +666,14 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
   );
 
   const renderConfirmation = () => (
-    <div className="bg-white rounded-lg shadow-sm border p-6 text-center">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6 text-center">
       <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
         <CheckCircle className="h-8 w-8 text-green-600" />
       </div>
-      
-      <h3 className="text-2xl font-bold text-gray-900 mb-2">Agendamento Confirmado!</h3>
-      <p className="text-gray-600 mb-4">Seu agendamento foi realizado com sucesso. Você receberá uma confirmação via WhatsApp.</p>
-      
+
+      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Agendamento Confirmado!</h3>
+      <p className="text-gray-600 dark:text-gray-300 mb-4">Seu agendamento foi realizado com sucesso. Você receberá uma confirmação via WhatsApp.</p>
+
       <div className="space-y-2 mb-6 text-left inline-block">
         <p className="text-gray-700"><span className="font-semibold">Barbearia:</span> {barbearia.nome}</p>
         <p className="text-gray-700"><span className="font-semibold">Data:</span> {selectedDate && availableDates.find(d => d.date === selectedDate)?.dayName}, {selectedDate && availableDates.find(d => d.date === selectedDate)?.dayNumber} de {selectedDate && availableDates.find(d => d.date === selectedDate)?.month}</p>
@@ -699,15 +693,19 @@ const BookingPage: React.FC<BookingPageProps> = ({ onBack, barbearia }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 flex flex-col items-center">
-      <div className="w-full max-w-4xl">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 flex flex-col items-center">
+      <div className="w-full max-w-4xl relative">
+        <div className="absolute right-0 top-0 z-10">
+          <ThemeToggle />
+        </div>
+
         {renderBarbershopInfo()}
 
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
           {currentStep !== 'confirmation' && (
             <button
               onClick={handleGoBack}
-              className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
+              className="flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white mb-6"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Voltar

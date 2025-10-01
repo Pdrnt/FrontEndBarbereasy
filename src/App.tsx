@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage';
 import ClientBookingPage from './pages/ClientBookingPage';
 import BookingPage from './pages/BookingPage';
 import { Barbearia, apiService } from './services/api';
+import { ThemeToggle } from './components/ThemeToggle';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -31,7 +32,7 @@ function App() {
         const barbearia = JSON.parse(barbeariaData);
         setBarbeariaLogada(barbearia);
         setIsLoggedIn(true);
-        
+
         // Se estamos na página de dashboard, manter na página
         const path = window.location.pathname;
         if (path === '/barbershop' || path.includes('barbershop')) {
@@ -60,24 +61,24 @@ function App() {
 
   const checkForBookingUrl = async () => {
     const path = window.location.pathname;
-    
+
     // Se a URL não é a raiz, pode ser um nomeUrl de barbearia ou página conhecida
     if (path !== '/' && path !== '') {
       const nomeUrl = path.substring(1); // Remove a barra inicial
-      
+
       // Verificar se é uma das páginas conhecidas
       const knownPages = ['barbershop', 'payment', 'register', 'login', 'client-booking'];
-      
+
       if (knownPages.includes(nomeUrl)) {
         setCurrentPage(nomeUrl);
         return;
       }
-      
+
       // Se não é uma página conhecida, pode ser um nomeUrl de barbearia
       if (!knownPages.includes(nomeUrl)) {
         setLoading(true);
         setError(null);
-        
+
         try {
           const barbearia = await apiService.getBarbeariaByNomeUrl(nomeUrl);
           setBarbeariaAgendamento(barbearia);
@@ -102,7 +103,7 @@ function App() {
     if (page !== 'barbershop') {
       // Não limpar a sessão ao navegar para outras páginas
     }
-    
+
     // Atualizar a URL
     if (page === 'home') {
       window.history.pushState({}, '', '/');

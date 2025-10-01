@@ -2,10 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: light dark;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  @apply bg-white text-gray-900 transition-colors duration-200;
+}
+
+body.dark {
+  @apply bg-gray-900 text-white;
+}
+
+[data-theme='dark'] {
+  @apply bg-gray-900 text-white;
 }

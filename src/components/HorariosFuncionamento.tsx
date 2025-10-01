@@ -46,7 +46,7 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
       try {
         setIsLoading(true);
         const horariosExistentes = await apiService.getHorariosByBarbearia(barbeariaId);
-        
+
         if (horariosExistentes.length === 0) {
           // Se não há horários, usar padrão
           setHorarios(initializeDefaultHorarios());
@@ -97,7 +97,7 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
         if (!horario.horaInicio || !horario.horaFim) {
           return 'Todos os horários ativos devem ter hora de início e fim';
         }
-        
+
         if (horario.horaInicio >= horario.horaFim) {
           return 'A hora de início deve ser menor que a hora de fim';
         }
@@ -122,25 +122,16 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
       const horariosAtivos = horarios
         .filter(h => h.ativo)
         .map(h => ({
-          diaSemana: h.diaSemana as any,
+          barbeariaId: barbeariaId,
+          diaSemana: h.diaSemana,
           horaInicio: h.horaInicio,
           horaFim: h.horaFim
         }));
 
-      // Enviar cada horário ativo individualmente para a nova rota de intervalos
-      for (const horario of horariosAtivos) {
-        await apiService.createIntervalo({
-          barbeariaId: barbeariaId,
-          barbeiroId: 1, // Assumindo um barbeiroId padrão, ajuste conforme necessário
-          diaSemana: horario.diaSemana,
-          horaInicio: horario.horaInicio,
-          horaFim: horario.horaFim,
-          data: null // 'data' é null para intervalos de funcionamento semanais
-        });
-      }
+      // Usar a rota de horários ao invés de intervalos
+      await apiService.updateHorariosBarbearia(barbeariaId, horariosAtivos);
+
       setSuccess('Horários salvos com sucesso!');
-      
-      // Limpar mensagem de sucesso após 3 segundos
       setTimeout(() => setSuccess(null), 3000);
     } catch (error: any) {
       setError('Erro ao salvar horários: ' + error.message);
@@ -166,16 +157,16 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div className="flex items-center space-x-2">
           <Clock className="h-6 w-6 text-yellow-400" />
           <h3 className="text-xl font-semibold text-gray-900">Horários de Funcionamento</h3>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-row gap-2 flex-wrap">
           <button
             onClick={handleReset}
-            className="flex items-center space-x-2 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex-shrink-0 flex items-center justify-center space-x-2 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <RotateCcw className="h-4 w-4" />
             <span>Resetar</span>
@@ -183,7 +174,7 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center space-x-2 px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex-shrink-0 flex items-center justify-center space-x-2 px-4 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Save className="h-4 w-4" />
             <span>{isSaving ? 'Salvando...' : 'Salvar'}</span>
@@ -211,7 +202,7 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
         {horarios.map((horario, index) => {
           const dia = diasSemana.find(d => d.key === horario.diaSemana);
           return (
-            <div key={horario.diaSemana} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
+            <div key={horario.diaSemana} className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 p-4 border border-gray-200 rounded-lg gap-4">
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -219,7 +210,7 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
                   onChange={(e) => updateHorario(index, 'ativo', e.target.checked)}
                   className="h-4 w-4 text-yellow-400 focus:ring-yellow-400 border-gray-300 rounded"
                 />
-                <label className="text-sm font-medium text-gray-900 w-24">
+                <label className="text-sm font-medium text-gray-900 min-w-[120px]">
                   {dia?.label}
                 </label>
               </div>
@@ -231,8 +222,7 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
                     type="time"
                     value={horario.horaInicio}
                     onChange={(e) => updateHorario(index, 'horaInicio', e.target.value)}
-                    disabled={!horario.ativo}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 disabled:bg-gray-100 disabled:text-gray-500"
+                    className="px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500"
                   />
                 </div>
 
@@ -242,8 +232,7 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
                     type="time"
                     value={horario.horaFim}
                     onChange={(e) => updateHorario(index, 'horaFim', e.target.value)}
-                    disabled={!horario.ativo}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 disabled:bg-gray-100 disabled:text-gray-500"
+                    className="px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500"
                   />
                 </div>
               </div>
