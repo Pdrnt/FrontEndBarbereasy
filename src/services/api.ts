@@ -630,3 +630,14 @@ export const formatTime = (dateString: string): string => {
   });
 };
 
+// Certifique-se que o método getHorariosByBarbearia está implementado corretamente
+export const getHorariosByBarbearia = async (barbeariaId: number): Promise<Horario[]> => {
+  try {
+    const response = await api.get(`/barbearias/${barbeariaId}/horarios`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar horários:', error);
+    throw error;
+  }
+};
+
