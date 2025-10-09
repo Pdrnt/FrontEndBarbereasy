@@ -125,14 +125,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onBack }) => {
                     Nome da Barbearia
                   </label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-300" />
                     <input
                       type="text"
                       name="barbershopName"
                       value={formData.barbershopName}
                       onChange={handleChange}
                       required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 transition-colors"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors"
                       placeholder="Nome da sua barbearia"
                     />
                   </div>
@@ -143,14 +143,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onBack }) => {
                     Nome do Proprietário
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-300" />
                     <input
                       type="text"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 transition-colors"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors"
                       placeholder="Seu nome completo"
                     />
                   </div>
@@ -161,14 +161,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onBack }) => {
                     Email
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-300" />
                     <input
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 transition-colors"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors"
                       placeholder="seu@email.com"
                     />
                   </div>
@@ -179,14 +179,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onBack }) => {
                     Telefone
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-300" />
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
                       required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 transition-colors"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors"
                       placeholder="(11) 99999-9999"
                     />
                   </div>
@@ -197,14 +197,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onBack }) => {
                     Senha
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-300" />
                     <input
                       type="password"
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
                       required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 transition-colors"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors"
                       placeholder="Mínimo 6 caracteres"
                     />
                   </div>
@@ -215,14 +215,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onBack }) => {
                     Confirmar Senha
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-300" />
                     <input
                       type="password"
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 transition-colors"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors"
                       placeholder="Confirme sua senha"
                     />
                   </div>

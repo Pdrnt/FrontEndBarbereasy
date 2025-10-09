@@ -96,7 +96,7 @@ const BarbershopLoginPage: React.FC<BarbershopLoginPageProps> = ({ onBack, onLog
                   Email da Barbearia
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-300" />
                   <input
                     type="email"
                     name="email"
@@ -104,7 +104,7 @@ const BarbershopLoginPage: React.FC<BarbershopLoginPageProps> = ({ onBack, onLog
                     onChange={handleChange}
                     required
                     disabled={isLoading}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 transition-colors disabled:opacity-50"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors disabled:opacity-50"
                     placeholder="barbearia@email.com"
                   />
                 </div>
@@ -115,7 +115,7 @@ const BarbershopLoginPage: React.FC<BarbershopLoginPageProps> = ({ onBack, onLog
                   Senha
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-300" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
@@ -123,14 +123,14 @@ const BarbershopLoginPage: React.FC<BarbershopLoginPageProps> = ({ onBack, onLog
                     onChange={handleChange}
                     required
                     disabled={isLoading}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 transition-colors disabled:opacity-50"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors disabled:opacity-50"
                     placeholder="Sua senha"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={isLoading}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300 hover:text-gray-600 disabled:opacity-50"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>

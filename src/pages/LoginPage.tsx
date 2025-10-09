@@ -99,14 +99,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onBack, onPageChange }) => {
                   Número de Telefone
                 </label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-300" />
                   <input
                     type="tel"
                     value={telefone}
                     onChange={handleTelefoneChange}
                     required
                     maxLength={15}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-yellow-400 transition-colors"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-white dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-300 focus:outline-none focus:border-yellow-400 transition-colors"
                     placeholder="(XX) XXXXX-XXXX"
                   />
                 </div>
