@@ -56,12 +56,6 @@ const Gallery = () => {
             </div>
           ))}
         </div>
-
-        <div className="text-center mt-12 sm:mt-16">
-          <button className="bg-yellow-400 text-black px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-500 transition-colors shadow-lg">
-            Conhecer Todas as Funcionalidades
-          </button>
-        </div>
       </div>
     </section>
   );

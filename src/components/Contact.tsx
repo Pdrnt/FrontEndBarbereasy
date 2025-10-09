@@ -48,7 +48,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-sm sm:text-base">Telefone</h4>
-                  <p className="text-gray-300 text-sm sm:text-base">(11) 99999-9999</p>
+                  <p className="text-gray-300 text-sm sm:text-base">(86) 99832-2414 </p>
                 </div>
               </div>
               
@@ -112,18 +112,7 @@ const Contact = () => {
                   onChange={handleChange}
                   className="bg-gray-800 border border-gray-600 rounded-lg px-3 sm:px-4 py-3 focus:outline-none focus:border-yellow-400 transition-colors duration-300 text-sm sm:text-base"
                 />
-                <select
-                  name="service"
-                  value={formData.service}
-                  onChange={handleChange}
-                  className="bg-gray-800 border border-gray-600 rounded-lg px-3 sm:px-4 py-3 focus:outline-none focus:border-yellow-400 transition-colors duration-300 text-sm sm:text-base"
-                >
-                  <option value="">Interesse em qual solução?</option>
-                  <option value="agendamentos">Sistema de Agendamentos</option>
-                  <option value="whatsapp">Integração WhatsApp</option>
-                  <option value="ia">IA Assistente</option>
-                  <option value="completo">Plataforma Completa</option>
-                </select>
+                
               </div>
               
               <textarea

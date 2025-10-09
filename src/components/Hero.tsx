@@ -84,12 +84,6 @@ const Hero: React.FC<HeroProps> = ({ onPageChange }) => {
             >
               Quero Contar com Seus Serviços
             </button>
-            <button 
-              onClick={() => onPageChange('login')}
-              className="border-2 border-yellow-400 text-yellow-400 px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-400 hover:text-black transition-colors"
-            >
-              Já Tenho Conta
-            </button>
           </div>
         </div>
       </div>
