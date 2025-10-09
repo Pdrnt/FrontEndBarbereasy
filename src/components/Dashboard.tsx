@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, User, CreditCard, LogIn } from 'lucide-react';
+import { User, CreditCard, LogIn } from 'lucide-react';
 
 interface DashboardProps {
   onPageChange: (page: string) => void;
@@ -42,7 +42,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onPageChange }) => {
       >
         <span className="hidden sm:inline">Dashboard</span>
         <span className="sm:hidden">Menu</span>
-        <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (

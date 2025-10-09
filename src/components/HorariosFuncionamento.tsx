@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Save, RotateCcw, AlertCircle } from 'lucide-react';
 import { apiService } from '../services/api';
 
 interface HorariosFuncionamentoProps {
   barbeariaId: number;
+  horarios?: Horario[]; // optional initial horarios passed from parent
+  onHorariosUpdate?: (horarios: Horario[]) => void;
 }
 
 interface Horario {
@@ -23,7 +24,7 @@ const diasSemana = [
   { key: 'DOMINGO', label: 'Domingo' },
 ];
 
-const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbeariaId }) => {
+const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbeariaId, horarios: propsHorarios, onHorariosUpdate }) => {
   const [horarios, setHorarios] = useState<Horario[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -35,41 +36,61 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
     const fetchHorarios = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`${API_BASE_URL}/barbearias/${barbeariaId}/horarios`);
 
-        if (!response.ok) {
-          throw new Error('Falha ao carregar horários');
+        // If parent provided horarios prop, use it as initial source.
+        // Handle both non-empty and empty arrays from parent.
+        if (propsHorarios) {
+          if (propsHorarios.length > 0) {
+            setHorarios(propsHorarios);
+          } else {
+            // Parent provided empty array -> initialize defaults
+            setHorarios(initializeDefaultHorarios());
+          }
+          setIsLoading(false);
+          return;
         }
 
-        const data = await response.json();
+        // Use apiService to fetch horários (avoids relying on a global API_BASE_URL)
+        const data = await apiService.getHorariosByBarbearia(barbeariaId);
 
         if (data && data.length > 0) {
-          setHorarios(data);
+          // Build full week ensuring days without entry are marked closed
+          const mapa: Record<string, any> = {};
+          data.forEach((h: any) => (mapa[h.diaSemana] = h));
+
+          const fullWeek = diasSemana.map(d => ({
+            diaSemana: d.key,
+            horaInicio: mapa[d.key]?.horaInicio || '09:00',
+            horaFim: mapa[d.key]?.horaFim || '18:00',
+            ativo: !!mapa[d.key]
+          }));
+
+          setHorarios(fullWeek);
         } else {
           // Se não houver horários, inicializa com os padrões
-          initializeDefaultHorarios();
+          setHorarios(initializeDefaultHorarios());
         }
       } catch (error) {
         console.error('Erro ao carregar horários:', error);
         setError('Erro ao carregar horários. Por favor, tente novamente.');
-        initializeDefaultHorarios();
+        setHorarios(initializeDefaultHorarios());
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchHorarios();
-  }, [barbeariaId]);
+    // Re-run when barbeariaId or incoming horarios prop change
+  }, [barbeariaId, propsHorarios]);
 
   // Função para inicializar horários padrão
-  const initializeDefaultHorarios = () => {
-    const horariosIniciais = diasSemana.map((dia) => ({
+  const initializeDefaultHorarios = (): Horario[] => {
+    return diasSemana.map((dia) => ({
       diaSemana: dia.key,
       horaInicio: '09:00',
       horaFim: '18:00',
       ativo: dia.key !== 'DOMINGO', // Domingo fechado por padrão
     }));
-    setHorarios(horariosIniciais);
   };
 
   // Atualizar horário específico
@@ -116,7 +137,6 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
       const horariosAtivos = horarios
         .filter(h => h.ativo)
         .map(h => ({
-          barbeariaId: barbeariaId,
           diaSemana: h.diaSemana,
           horaInicio: h.horaInicio,
           horaFim: h.horaFim
@@ -127,6 +147,11 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
 
       setSuccess('Horários salvos com sucesso!');
       setTimeout(() => setSuccess(null), 3000);
+
+      // Notify parent if provided
+      if (onHorariosUpdate) {
+        onHorariosUpdate(horarios);
+      }
     } catch (error: any) {
       setError('Erro ao salvar horários: ' + error.message);
     } finally {
@@ -149,40 +174,43 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
         <div className="text-red-500 text-center">{error}</div>
       ) : (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 sm:p-6">
+          {success && (
+            <div className="mb-3 text-green-600">{success}</div>
+          )}
           <div className="space-y-4">
             {diasSemana.map((dia, index) => (
               <div key={dia.key} className="bg-white dark:bg-gray-800 rounded-lg p-4 border dark:border-gray-700">
-                <div className="flex items-center gap-4">
-                  <label className="text-gray-900 dark:text-white font-medium w-32">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                  <label className="text-gray-900 dark:text-white font-medium w-full sm:w-32">
                     {dia.label}
                   </label>
                   <select
                     value={horarios[index]?.ativo ? 'ABERTO' : 'FECHADO'}
                     onChange={(e) => updateHorario(index, 'ativo', e.target.value === 'ABERTO')}
-                    className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:border-yellow-400"
+                    className="w-full sm:w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:border-yellow-400"
                   >
                     <option value="ABERTO" className="dark:text-gray-900">Aberto</option>
                     <option value="FECHADO" className="dark:text-gray-900">Fechado</option>
                   </select>
 
                   {horarios[index]?.ativo && (
-                    <div className="flex gap-4 flex-1">
-                      <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 flex-1 w-full">
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
                         <label className="text-gray-600 dark:text-gray-200">Abertura</label>
                         <input
                           type="time"
                           value={horarios[index].horaInicio}
                           onChange={(e) => updateHorario(index, 'horaInicio', e.target.value)}
-                          className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:border-yellow-400"
+                          className="w-full sm:w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:border-yellow-400"
                         />
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
                         <label className="text-gray-600 dark:text-gray-200">Fechamento</label>
                         <input
                           type="time"
                           value={horarios[index].horaFim}
                           onChange={(e) => updateHorario(index, 'horaFim', e.target.value)}
-                          className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:border-yellow-400"
+                          className="w-full sm:w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:border-yellow-400"
                         />
                       </div>
                     </div>
@@ -190,6 +218,21 @@ const HorariosFuncionamento: React.FC<HorariosFuncionamentoProps> = ({ barbearia
                 </div>
               </div>
             ))}
+          </div>
+          <div className="mt-4 flex gap-2 justify-end">
+            <button
+              onClick={handleReset}
+              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md text-sm"
+            >
+              Resetar
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="px-4 py-2 bg-yellow-400 text-black rounded-md text-sm disabled:opacity-50"
+            >
+              {isSaving ? 'Salvando...' : 'Salvar'}
+            </button>
           </div>
         </div>
       )}

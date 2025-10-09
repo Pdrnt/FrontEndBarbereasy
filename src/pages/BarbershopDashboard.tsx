@@ -689,11 +689,19 @@ const BarbershopDashboard: React.FC<BarbershopDashboardProps> = ({ onBack, onLog
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       {/* Navbar/Header */}
-      <nav className="bg-white dark:bg-gray-800 shadow-md transition-colors duration-200">
+      <nav className="relative bg-white dark:bg-gray-800 shadow-md transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo e título da barbearia */}
-            <div className="flex items-center space-x-3">
+            {/* Left-positioned barbershop info (logo, name, plan) */}
+            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex items-center space-x-3 z-50">
+              {isMobile && (
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-1"
+                >
+                  <Menu className="h-6 w-6" />
+                </button>
+              )}
               {isValidLogoUrl(dadosBarbearia.logoUrl) && !logoError ? (
                 <img
                   src={dadosBarbearia.logoUrl}
@@ -706,8 +714,8 @@ const BarbershopDashboard: React.FC<BarbershopDashboardProps> = ({ onBack, onLog
                   <Scissors className="h-5 w-5 text-black" />
                 </div>
               )}
-              <div className="min-w-0 flex-1">
-                <h1 className="text-sm font-bold text-gray-900 dark:text-white truncate">
+              <div className="min-w-0">
+                <h1 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate">
                   {dadosBarbearia.nome}
                 </h1>
                 <div className="flex items-center space-x-1">
@@ -723,18 +731,38 @@ const BarbershopDashboard: React.FC<BarbershopDashboardProps> = ({ onBack, onLog
               </div>
             </div>
 
-            {/* Theme toggle and user actions */}
-            <div className="flex items-center gap-4">
-              <ThemeToggle />
-              <button
-                onClick={onLogout}
-                className="flex items-center justify-center px-3 py-2 text-sm text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Sair
-              </button>
+            {/* Centered controls: back button and plan days remaining */}
+            <div className="flex items-center gap-4 justify-center">
+              <div className="flex items-center">
+                {/* mobile menu button moved to left container to avoid overlap */}
+                <button
+                  onClick={onBack}
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                </button>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                {dadosBarbearia.plano !== 'CLOSED' && dadosBarbearia.updatedAt && (
+                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                    {calcularDiasRestantes(dadosBarbearia.updatedAt)} dias restantes
+                  </span>
+                )}
+              </div>
             </div>
           </div>
+        </div>
+
+        {/* Logout button positioned to the right edge of the screen */}
+        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-3">
+          <ThemeToggle />
+          <button
+            onClick={onLogout}
+            className="flex items-center justify-center px-3 py-2 text-sm text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Sair
+          </button>
         </div>
       </nav>
 
@@ -753,23 +781,12 @@ const BarbershopDashboard: React.FC<BarbershopDashboardProps> = ({ onBack, onLog
                   onError={() => setLogoError(true)}
                 />
               ) : (
-                <div className="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center">
-                  <Scissors className="h-5 w-5 text-black" />
+                <div className=''>
                 </div>
               )}
               <div className="min-w-0 flex-1">
-                <h1 className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                  {dadosBarbearia.nome}
-                </h1>
+                
                 <div className="flex items-center space-x-1">
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${dadosBarbearia.plano === 'STANDARD' ? 'bg-green-100 text-green-800' :
-                    dadosBarbearia.plano === 'PREMIUM' ? 'bg-purple-100 text-purple-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                    {dadosBarbearia.plano === 'STANDARD' ? 'Standard' :
-                      dadosBarbearia.plano === 'PREMIUM' ? 'Premium' :
-                        'Básico'}
-                  </span>
                 </div>
               </div>
             </div>
@@ -822,7 +839,7 @@ const BarbershopDashboard: React.FC<BarbershopDashboardProps> = ({ onBack, onLog
               </button>
               <button
                 onClick={onLogout}
-                className="w-full flex items-center justify-center px-3 py-2 text-sm text-red-700 dark:text-red-200 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-800 rounded-md hover:bg-red-100 dark:hover:bg-red-800"
+                className="w-full flex items-center justify-rigth px-3 py-2 text-sm text-red-700 dark:text-red-200 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-800 rounded-md hover:bg-red-100 dark:hover:bg-red-800"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Sair
@@ -833,38 +850,7 @@ const BarbershopDashboard: React.FC<BarbershopDashboardProps> = ({ onBack, onLog
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Top Header */}
-          <div className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
-            <div className="px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center justify-between h-16">
-                <div className="flex items-center">
-                  {isMobile && (
-                    <button
-                      onClick={() => setSidebarOpen(true)}
-                      className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-3"
-                    >
-                      <Menu className="h-6 w-6" />
-                    </button>
-                  )}
-                  <button
-                    onClick={onBack}
-                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
-                  >
-                    <ArrowLeft className="h-5 w-5" />
-                    <span className="hidden sm:inline">Voltar</span>
-                  </button>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  {dadosBarbearia.plano !== 'CLOSED' && dadosBarbearia.updatedAt && (
-                    <span className="hidden sm:inline text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                      {calcularDiasRestantes(dadosBarbearia.updatedAt)} dias restantes
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Top Header removed — controls moved into main navbar to avoid duplication/overlap */}
 
           {/* Content Area */}
           <div className="flex-1 overflow-auto bg-gray-50 dark:bg-gray-900">
