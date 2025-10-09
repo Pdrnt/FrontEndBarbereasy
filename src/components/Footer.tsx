@@ -44,7 +44,7 @@ const Footer = () => {
           <div>
             <h4 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6">Contato</h4>
             <ul className="space-y-2 sm:space-y-3 text-gray-400 text-sm sm:text-base">
-              <li>(11) 99999-9999</li>
+              <li>(86) 99832-2414</li>
               <li>vendas@barbereasy.com</li>
               <li></li>
             </ul>
